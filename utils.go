@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"math"
 	"net/url"
+	"reflect"
 	"regexp"
 	"strings"
 
 	"github.com/gosimple/slug"
+	nanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/microcosm-cc/bluemonday"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 // Truncate string
@@ -93,4 +96,123 @@ func NumberSize(bytes float64, precision int) string {
 	p := int(math.Round(pow))
 	result := fmt.Sprintf("%.2f %s", parsed, units[p])
 	return result
+}
+
+func NanoId() string {
+	return nanoid.Must()
+}
+
+func TimeAgo(seconds int64) string {
+	interval := int(math.Floor(float64(seconds) / 31536000))
+
+	if interval > 1 {
+		return fmt.Sprintf("%d years ago", interval)
+	}
+
+	interval = int(math.Floor(float64(seconds) / 2592000))
+	if interval > 1 {
+		return fmt.Sprintf("%d months ago", interval)
+	}
+
+	interval = int(math.Floor(float64(seconds) / 86400))
+	if interval > 1 {
+		return fmt.Sprintf("%d days ago", interval)
+	}
+
+	interval = int(math.Floor(float64(seconds) / 3600))
+	if interval > 1 {
+		return fmt.Sprintf("%d hours ago", interval)
+	}
+
+	interval = int(math.Floor(float64(seconds) / 60))
+	if interval > 1 {
+		return fmt.Sprintf("%d minutes ago", interval)
+	}
+
+	return "less minutes ago"
+}
+
+func SeparateNumber(number int64) string {
+	p := message.NewPrinter(language.English)
+	str := p.Sprintf("%d", number)
+	return str
+}
+
+func IsUrl(stringUrl string) bool {
+	_, err := url.ParseRequestURI(stringUrl)
+	return err == nil
+}
+
+func IsTwitterUrl(twitterUrl string) bool {
+	isUrl := IsUrl(twitterUrl)
+
+	if !isUrl {
+		return false
+	}
+
+	regex := regexp.MustCompile(`^https?\:\/\/(www.)?twitter\.com`)
+
+	return regex.MatchString(twitterUrl)
+}
+
+func FirstToUpper(text string) string {
+	a := text[0:1]
+	a = strings.ToUpper(a)
+	return fmt.Sprintf("%s%s", a, text[1:])
+}
+
+type NumberFormatType struct {
+	Number int64  `json:"number"`
+	Format string `json:"format"`
+}
+
+func NumberFormatShort(n int64) NumberFormatType {
+	num := "0"
+
+	if n < 900 { // 0 - 900
+		num = fmt.Sprintf("%d", n)
+	} else if n < 900000 { // 0.9 K - 850 K
+		num = fmt.Sprintf("%.2f K", (float64(n) / 1000))
+	} else if n < 900000000 { // 0.9 M - 850 M
+		num = fmt.Sprintf("%.2f M", (float64(n) / 1000000))
+	} else if n < 900000000000 { // 0.9 B - 850 B
+		num = fmt.Sprintf("%.2f B", (float64(n) / 1000000000))
+	} else { // 0.9 T +
+		num = fmt.Sprintf("%.2f T", (float64(n) / 1000000000000))
+	}
+
+	return NumberFormatType{
+		Number: n,
+		Format: num,
+	}
+}
+
+func ValidateEmail(e string) bool {
+	regex := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$`)
+	return regex.MatchString(e)
+}
+
+func IsTrue(value interface{}) bool {
+	r := reflect.TypeOf(value)
+	t := r.String()
+
+	if t == "string" {
+		if value == "1" || value == "true" {
+			return true
+		}
+	}
+
+	if t == "int" || t == "int32" || t == "int64" {
+		if value == 1 {
+			return true
+		}
+	}
+
+	if t == "bool" {
+		if value == true {
+			return true
+		}
+	}
+
+	return false
 }

@@ -2,7 +2,10 @@ module github.com/portalnesia/go-utils
 
 go 1.19
 
-require github.com/microcosm-cc/bluemonday v1.0.19
+require (
+	github.com/matoous/go-nanoid/v2 v2.0.0
+	github.com/microcosm-cc/bluemonday v1.0.19
+)
 
 require github.com/gosimple/unidecode v1.0.1 // indirect
 
