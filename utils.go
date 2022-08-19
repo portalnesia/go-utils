@@ -17,6 +17,8 @@ import (
 )
 
 // Truncate string
+//
+// Ex. lorem ipsum lorem ipsum lorem ipsum => lorem ipsum lor...
 func Truncate(s string, max int) string {
 	return s[:max] + "..."
 }
@@ -34,6 +36,8 @@ func CleanAndTruncate(s string, max int) string {
 }
 
 // Parse raw URL to clean URL
+//
+// Ex. https://portalnesia.com/contact => portalnesia.com/contact
 func ParseUrl(s string) (string, error) {
 	url, err := url.Parse(s)
 	query := url.RawQuery
@@ -47,6 +51,9 @@ func ParseUrl(s string) (string, error) {
 	return parser, err
 }
 
+// Capitalize each words in string
+//
+// Ex. Hello world => Hello World
 func Ucwords(s string) string {
 	caser := cases.Title(language.Indonesian)
 	return caser.String(strings.ToLower(s))
@@ -71,10 +78,16 @@ func FirstLetter(s string, max int) string {
 	return output
 }
 
+// Slugify format of string
+//
+// Ex. hello world => hello-world
 func Slug(s string) string {
 	return slug.Make(s)
 }
 
+// Format bytes to human readable string
+//
+// Ex. 50486525485 => 5.05 GB
 func NumberSize(bytes float64, precision int) string {
 	if precision <= 0 {
 		precision = 2
@@ -98,10 +111,14 @@ func NumberSize(bytes float64, precision int) string {
 	return result
 }
 
+// Generate random ID
 func NanoId() string {
 	return nanoid.Must()
 }
 
+// Format second integer to human readable `timeago` format
+//
+// Ex. 11 minutes ago
 func TimeAgo(seconds int64) string {
 	interval := int(math.Floor(float64(seconds) / 31536000))
 
@@ -132,17 +149,22 @@ func TimeAgo(seconds int64) string {
 	return "less minutes ago"
 }
 
+// Comma separate integer
+//
+// Ex. 5000 => 5,000
 func SeparateNumber(number int64) string {
 	p := message.NewPrinter(language.English)
 	str := p.Sprintf("%d", number)
 	return str
 }
 
+// ValidateURL
 func IsUrl(stringUrl string) bool {
 	_, err := url.ParseRequestURI(stringUrl)
 	return err == nil
 }
 
+// Validate Twitter URL
 func IsTwitterUrl(twitterUrl string) bool {
 	isUrl := IsUrl(twitterUrl)
 
@@ -155,6 +177,9 @@ func IsTwitterUrl(twitterUrl string) bool {
 	return regex.MatchString(twitterUrl)
 }
 
+// Capitalize first characters in word
+//
+// Ex. hello world => Hello world
 func FirstToUpper(text string) string {
 	a := text[0:1]
 	a = strings.ToUpper(a)
@@ -166,6 +191,9 @@ type NumberFormatType struct {
 	Format string `json:"format"`
 }
 
+// Format integer to K,M,B,T format
+//
+// Ex. 64768456 => 64.77 M
 func NumberFormatShort(n int64) NumberFormatType {
 	num := "0"
 
@@ -187,11 +215,13 @@ func NumberFormatShort(n int64) NumberFormatType {
 	}
 }
 
+// Validate email
 func ValidateEmail(e string) bool {
 	regex := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$`)
 	return regex.MatchString(e)
 }
 
+// Check if variable is true
 func IsTrue(value interface{}) bool {
 	r := reflect.TypeOf(value)
 	t := r.String()
