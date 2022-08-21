@@ -74,6 +74,15 @@ func TestFirstLetter(t *testing.T) {
 	}
 }
 
+func TestSlug(t *testing.T) {
+	text := "Hello World, This Is From Testing"
+	parse := Slug(text)
+
+	if parse != "hello-world-this-is-from-testing" {
+		t.Errorf("Invalid TestSlug. Get: %s", parse)
+	}
+}
+
 func TestNumberSize(t *testing.T) {
 	size := 50486525485
 
