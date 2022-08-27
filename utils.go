@@ -11,6 +11,7 @@ import (
 	"github.com/gosimple/slug"
 	nanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/portalnesia/go-utils/goment"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -18,7 +19,7 @@ import (
 
 // Truncate string
 //
-// Ex. lorem ipsum lorem ipsum lorem ipsum => lorem ipsum lor...
+// Example: "lorem ipsum lorem ipsum lorem ipsum" => "lorem ipsum lor..."
 func Truncate(s string, max int) string {
 	return s[:max] + "..."
 }
@@ -37,7 +38,7 @@ func CleanAndTruncate(s string, max int) string {
 
 // Parse raw URL to clean URL
 //
-// Ex. https://portalnesia.com/contact => portalnesia.com/contact
+// Example: "https://portalnesia.com/contact" => "portalnesia.com/contact"
 func ParseUrl(s string) (string, error) {
 	url, err := url.Parse(s)
 	query := url.RawQuery
@@ -53,7 +54,7 @@ func ParseUrl(s string) (string, error) {
 
 // Capitalize each words in string
 //
-// Ex. Hello world => Hello World
+// Example: "Hello world" => "Hello World"
 func Ucwords(s string) string {
 	caser := cases.Title(language.Indonesian)
 	return caser.String(strings.ToLower(s))
@@ -61,7 +62,7 @@ func Ucwords(s string) string {
 
 // Parse string to first letter uppercase
 //
-// Ex. Hello world => HM
+// Example: "Hello world" => "HM"
 //
 // If max is less than 1, function return all first letter of strings
 func FirstLetter(s string, max int) string {
@@ -80,14 +81,14 @@ func FirstLetter(s string, max int) string {
 
 // Slugify format of string
 //
-// Ex. hello world => hello-world
+//	Esample: "hello world" => "hello-world"
 func Slug(s string) string {
 	return slug.Make(s)
 }
 
 // Format bytes to human readable string
 //
-// Ex. 50486525485 => 5.05 GB
+// Example: 50486525485 => "5.05 GB"
 func NumberSize(bytes float64, precision int) string {
 	if precision <= 0 {
 		precision = 2
@@ -118,40 +119,20 @@ func NanoId() string {
 
 // Format second integer to human readable `timeago` format
 //
-// Ex. 11 minutes ago
+// Example: `11 minutes ago`
+//
+// Deprecated: use the [goment.TimeAgo] instead
 func TimeAgo(seconds int64) string {
-	interval := int(math.Floor(float64(seconds) / 31536000))
-
-	if interval > 1 {
-		return fmt.Sprintf("%d years ago", interval)
+	a, err := goment.New(seconds)
+	if err != nil {
+		panic(err)
 	}
-
-	interval = int(math.Floor(float64(seconds) / 2592000))
-	if interval > 1 {
-		return fmt.Sprintf("%d months ago", interval)
-	}
-
-	interval = int(math.Floor(float64(seconds) / 86400))
-	if interval > 1 {
-		return fmt.Sprintf("%d days ago", interval)
-	}
-
-	interval = int(math.Floor(float64(seconds) / 3600))
-	if interval > 1 {
-		return fmt.Sprintf("%d hours ago", interval)
-	}
-
-	interval = int(math.Floor(float64(seconds) / 60))
-	if interval > 1 {
-		return fmt.Sprintf("%d minutes ago", interval)
-	}
-
-	return "less minutes ago"
+	return a.TimeAgo(true).Format
 }
 
 // Comma separate integer
 //
-// Ex. 5000 => 5,000
+// Example: 5000 => "5,000"
 func SeparateNumber(number int64) string {
 	p := message.NewPrinter(language.English)
 	str := p.Sprintf("%d", number)
@@ -179,7 +160,7 @@ func IsTwitterUrl(twitterUrl string) bool {
 
 // Capitalize first characters in word
 //
-// Ex. hello world => Hello world
+// Example: "hello world" => "Hello world"
 func FirstToUpper(text string) string {
 	a := text[0:1]
 	a = strings.ToUpper(a)
@@ -193,7 +174,7 @@ type NumberFormatType struct {
 
 // Format integer to K,M,B,T format
 //
-// Ex. 64768456 => 64.77 M
+// Example: 64768456 => "64.77 M"
 func NumberFormatShort(n int64) NumberFormatType {
 	num := "0"
 
@@ -245,4 +226,11 @@ func IsTrue(value interface{}) bool {
 	}
 
 	return false
+}
+
+// New goment instance
+//
+//	Alias of [goment.New]
+func NewGoment(args ...interface{}) (*goment.PortalnesiaGoment, error) {
+	return goment.New(args...)
 }
