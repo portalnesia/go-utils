@@ -11,11 +11,8 @@ var (
 )
 
 func TestNewStringFormat(t *testing.T) {
-	a, err := New(stringFormat) // UTC 0000
+	a := Must(stringFormat) // UTC 0000
 
-	if err != nil {
-		t.Errorf("[New] %+v", err)
-	}
 	f := a.Format("YYYY-MM-DD HH:mm:ss")
 	if f != stringFormat {
 		t.Errorf("[New] Error Format Date. Get: %s", f)
@@ -28,11 +25,8 @@ func TestNewStringFormat(t *testing.T) {
 }
 
 func TestUnixFormat(t *testing.T) {
-	a, err := New(unixFormat)
+	a := Must(unixFormat)
 
-	if err != nil {
-		t.Errorf("[New] %+v", err)
-	}
 	f := a.Format("YYYY-MM-DD HH:mm:ss")
 	if f != stringFormat {
 		t.Errorf("[New] Error Format Date. Get: %s", f)
@@ -42,13 +36,26 @@ func TestUnixFormat(t *testing.T) {
 	if u != unixFormat {
 		t.Errorf("[New] Error Unix Date. Get: %v", u)
 	}
+
+	a, err := New(unixFormat)
+
+	if err != nil {
+		t.Errorf("[New] %+v", err)
+	}
+
+	f = a.Format("YYYY-MM-DD HH:mm:ss")
+	if f != stringFormat {
+		t.Errorf("[New] Error Format Date. Get: %s", f)
+	}
+
+	u = a.ToUnix()
+	if u != unixFormat {
+		t.Errorf("[New] Error Unix Date. Get: %v", u)
+	}
 }
 
 func TestTimeagoYear(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[TimeagoYear] %+v", err)
-	}
+	a := Must()
 
 	a.Subtract(2, "years")
 	b := a.TimeAgo()
@@ -59,10 +66,7 @@ func TestTimeagoYear(t *testing.T) {
 }
 
 func TestTimeagoMonth(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[TimeagoMonth] %+v", err)
-	}
+	a := Must()
 	a.Subtract(4, "month")
 	b := a.TimeAgo()
 
@@ -72,10 +76,8 @@ func TestTimeagoMonth(t *testing.T) {
 }
 
 func TestTimeagoDay(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[TimeagoDay] %+v", err)
-	}
+	a := Must()
+
 	a.Subtract(7, "days")
 	b := a.TimeAgo()
 
@@ -85,10 +87,8 @@ func TestTimeagoDay(t *testing.T) {
 }
 
 func TestTimeagoMinute(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[TimeagoDay] %+v", err)
-	}
+	a := Must()
+
 	a.Subtract(7, "minutes")
 	b := a.TimeAgo()
 
@@ -98,10 +98,8 @@ func TestTimeagoMinute(t *testing.T) {
 }
 
 func TestTimeagoSecond(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[TimeagoSecond] %+v", err)
-	}
+	a := Must()
+
 	a.Subtract(7, "seconds")
 	b := a.TimeAgo()
 
@@ -111,10 +109,8 @@ func TestTimeagoSecond(t *testing.T) {
 }
 
 func TestFormatMinimal(t *testing.T) {
-	a, err := New(stringFormat)
-	if err != nil {
-		t.Errorf("[FormatMinimal] %+v", err)
-	}
+	a := Must(stringFormat)
+
 	b := a.PNformat("minimal")
 	if b != "02 Feb 2020" {
 		t.Errorf("[FormatMinimal]. Get: %v", b)
@@ -122,10 +118,8 @@ func TestFormatMinimal(t *testing.T) {
 }
 
 func TestFormatFulldate(t *testing.T) {
-	a, err := New(stringFormat)
-	if err != nil {
-		t.Errorf("[FormatFulldate] %+v", err)
-	}
+	a := Must(stringFormat)
+
 	b := a.PNformat("fulldate")
 	if b != "02 February 2020" {
 		t.Errorf("[FormatFulldate]. Get: %v", b)
@@ -133,10 +127,8 @@ func TestFormatFulldate(t *testing.T) {
 }
 
 func TestFormatFull(t *testing.T) {
-	a, err := New(stringFormat)
-	if err != nil {
-		t.Errorf("[FormatFull] %+v", err)
-	}
+	a := Must(stringFormat)
+
 	b := a.PNformat("full")
 	if b != "02 February 2020, 12:00" {
 		t.Errorf("[FormatFull]. Get: %v", b)
@@ -144,10 +136,8 @@ func TestFormatFull(t *testing.T) {
 }
 
 func TestFormatISO8601(t *testing.T) {
-	a, err := New(stringFormat)
-	if err != nil {
-		t.Errorf("[FormatISO8601] %+v", err)
-	}
+	a := Must(stringFormat)
+
 	b := a.PNformat()
 	if b != stringFormat {
 		t.Errorf("[FormatISO8601]. Get: %v", b)
@@ -155,14 +145,9 @@ func TestFormatISO8601(t *testing.T) {
 }
 
 func TestRangeFormatYear(t *testing.T) {
-	a, err := New(stringFormat)
-	if err != nil {
-		t.Errorf("[RangeFormatYear] %+v", err)
-	}
-	b, err := New()
-	if err != nil {
-		t.Errorf("[RangeFormatYear] %+v", err)
-	}
+	a := Must(stringFormat)
+
+	b := Must()
 
 	r := a.RangeFormat(b)
 
@@ -172,15 +157,10 @@ func TestRangeFormatYear(t *testing.T) {
 }
 
 func TestRangeFormatMonth(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[RangeFormatMonth] %+v", err)
-	}
+	a := Must()
+
 	a.Subtract(2, "months")
-	b, err := New()
-	if err != nil {
-		t.Errorf("[RangeFormatMonth] %+v", err)
-	}
+	b := Must()
 
 	r := a.RangeFormat(b)
 
@@ -190,15 +170,9 @@ func TestRangeFormatMonth(t *testing.T) {
 }
 
 func TestRangeFormatDay(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[RangeFormatDay] %+v", err)
-	}
-	a.Subtract(2, "days")
-	b, err := New()
-	if err != nil {
-		t.Errorf("[RangeFormatDay] %+v", err)
-	}
+	a := Must().Subtract(2, "days")
+
+	b := Must()
 
 	r := a.RangeFormat(b)
 
@@ -208,12 +182,8 @@ func TestRangeFormatDay(t *testing.T) {
 }
 
 func TestRangeFormatTime(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Errorf("[RangeFormatTime] %+v", err)
-	}
+	a := Must()
 	b := a.Clone().Subtract(2, "hours")
-
 	r := b.RangeFormat(a)
 
 	if r != fmt.Sprintf("%s - %s, %s", b.Format("HH:mm"), a.Format("HH:mm"), b.Format("DD MMMM YYYY")) {
@@ -222,10 +192,7 @@ func TestRangeFormatTime(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	a, err := New("2022-05-05 12:00:00")
-	if err != nil {
-		t.Errorf("[TestAdd] %+v", err)
-	}
+	a := Must("2022-05-05 12:00:00")
 
 	a.Add(6, "hours")
 	f := a.Hour()
@@ -236,10 +203,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestSubtract(t *testing.T) {
-	a, err := New("2022-05-05 12:00:00")
-	if err != nil {
-		t.Errorf("[TestSubtract] %+v", err)
-	}
+	a := Must("2022-05-05 12:00:00")
 
 	a.Subtract(6, "hours")
 	f := a.Hour()
@@ -250,10 +214,7 @@ func TestSubtract(t *testing.T) {
 }
 
 func TestClone(t *testing.T) {
-	a, err := New()
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must()
 
 	b := a.Clone().Subtract(2, "hours")
 
@@ -263,10 +224,7 @@ func TestClone(t *testing.T) {
 }
 
 func TestEndOf(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	b := a.EndOf("month")
 
@@ -276,10 +234,7 @@ func TestEndOf(t *testing.T) {
 }
 
 func TestStartOf(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	b := a.StartOf("month")
 
@@ -289,10 +244,7 @@ func TestStartOf(t *testing.T) {
 }
 
 func TestSetByUnits(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.Set("y", 2016).Year() != 2016 {
 		t.Error()
@@ -369,10 +321,7 @@ func TestSetByUnits(t *testing.T) {
 }
 
 func TestSetDay(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Errorf("[TestSetDay] %+v", err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	a.SetDay(0)
 	f := a.Day()
@@ -390,10 +339,7 @@ func TestSetDay(t *testing.T) {
 }
 
 func TestSetYear(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetYear(2016).Year() != 2016 {
 		t.Error()
@@ -401,10 +347,7 @@ func TestSetYear(t *testing.T) {
 }
 
 func TestSetMonth(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetMonth(5).Month() != 5 {
 		t.Error()
@@ -412,10 +355,7 @@ func TestSetMonth(t *testing.T) {
 }
 
 func TestSetDate(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetDate(5).Date() != 5 {
 		t.Error()
@@ -423,10 +363,7 @@ func TestSetDate(t *testing.T) {
 }
 
 func TestSetDayOfYear(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetDayOfYear(300).DayOfYear() != 300 {
 		t.Error()
@@ -434,10 +371,7 @@ func TestSetDayOfYear(t *testing.T) {
 }
 
 func TestSetHour(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetHour(12).Hour() != 12 {
 		t.Error()
@@ -445,10 +379,7 @@ func TestSetHour(t *testing.T) {
 }
 
 func TestSetMinute(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetMinute(12).Minute() != 12 {
 		t.Error()
@@ -456,10 +387,7 @@ func TestSetMinute(t *testing.T) {
 }
 
 func TestSetMillisecond(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetMillisecond(1000).Millisecond() != 1000 {
 		t.Error()
@@ -467,10 +395,7 @@ func TestSetMillisecond(t *testing.T) {
 }
 
 func TestSetNanosecond(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetNanosecond(1000000).Nanosecond() != 1000000 {
 		t.Error()
@@ -478,10 +403,7 @@ func TestSetNanosecond(t *testing.T) {
 }
 
 func TestSetSecond(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetSecond(12).Second() != 12 {
 		t.Error()
@@ -489,10 +411,7 @@ func TestSetSecond(t *testing.T) {
 }
 
 func TestSetWeek(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetWeek(12).Week() != 12 {
 		t.Error()
@@ -500,10 +419,7 @@ func TestSetWeek(t *testing.T) {
 }
 
 func TestSetWeekYear(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetWeekYear(2020).WeekYear() != 2020 {
 		t.Error()
@@ -511,10 +427,7 @@ func TestSetWeekYear(t *testing.T) {
 }
 
 func TestSetWeekDay(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetWeekday(2).Weekday() != 2 {
 		t.Error()
@@ -522,10 +435,7 @@ func TestSetWeekDay(t *testing.T) {
 }
 
 func TestSetQuarter(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetQuarter(1).Quarter() != 1 {
 		t.Error()
@@ -533,32 +443,15 @@ func TestSetQuarter(t *testing.T) {
 }
 
 func TestSetUTCOffset(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetUTCOffset(7).UTCOffset() != 7*60 {
 		t.Error()
 	}
 }
 
-func TestSetISOWeek(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
-
-	if a.SetISOWeek(50).ISOWeek() != 50 {
-		t.Error()
-	}
-}
-
 func TestSetISOWeekYear(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetISOWeekYear(2022).ISOWeekYear() != 2022 {
 		t.Error()
@@ -566,10 +459,7 @@ func TestSetISOWeekYear(t *testing.T) {
 }
 
 func TestSetISOWeekday(t *testing.T) {
-	a, err := New("2022-09-12 12:00:00")
-	if err != nil {
-		t.Error(err)
-	}
+	a := Must("2022-09-12 12:00:00")
 
 	if a.SetISOWeekday(2).ISOWeekday() != 2 {
 		t.Error()

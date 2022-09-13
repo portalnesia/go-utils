@@ -100,6 +100,17 @@ func TestNanoId(t *testing.T) {
 	if parse == "" {
 		t.Errorf("Invalid NanoId. Get: %s", parse)
 	}
+	if len(parse) != 21 {
+		t.Errorf("Invalid NanoId length. Get: %s", parse)
+	}
+
+	parse = NanoId(50)
+	if parse == "" {
+		t.Errorf("Invalid NanoId. Get: %s", parse)
+	}
+	if len(parse) != 50 {
+		t.Errorf("Invalid NanoId length. Get: %s", parse)
+	}
 }
 
 func TestTimeAgo(t *testing.T) {
@@ -296,11 +307,8 @@ func TestNewGoment(t *testing.T) {
 		unixFormat   int64  = 1580644800
 	)
 
-	a, err := NewGoment(unixFormat)
+	a := NewGoment(unixFormat)
 
-	if err != nil {
-		t.Errorf("[NewGoment] %+v", err)
-	}
 	f := a.Format("YYYY-MM-DD HH:mm:ss")
 	if f != stringFormat {
 		t.Errorf("[NewGoment] Error Format Date. Get: %s", f)

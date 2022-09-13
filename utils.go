@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"net/url"
-	"reflect"
 	"regexp"
 	"strings"
 
@@ -41,6 +40,9 @@ func CleanAndTruncate(s string, max int) string {
 // Example: "https://portalnesia.com/contact" => "portalnesia.com/contact"
 func ParseUrl(s string) (string, error) {
 	url, err := url.Parse(s)
+	if err != nil {
+		return "", err
+	}
 	query := url.RawQuery
 
 	if query != "" {
@@ -49,7 +51,7 @@ func ParseUrl(s string) (string, error) {
 
 	parser := fmt.Sprintf("%s%s%s", url.Host, url.Path, query)
 	parser = strings.Replace(parser, "www.", "", 1)
-	return parser, err
+	return parser, nil
 }
 
 // Capitalize each words in string
@@ -81,7 +83,7 @@ func FirstLetter(s string, max int) string {
 
 // Slugify format of string
 //
-//	Esample: "hello world" => "hello-world"
+// Example: "hello world" => "hello-world"
 func Slug(s string) string {
 	return slug.Make(s)
 }
@@ -113,20 +115,19 @@ func NumberSize(bytes float64, precision int) string {
 }
 
 // Generate random ID
-func NanoId() string {
-	return nanoid.Must()
+func NanoId(length ...int) string {
+	return nanoid.Must(length...)
 }
 
 // Format second integer to human readable `timeago` format
 //
 // Example: `11 minutes ago`
 //
-// Deprecated: use the [goment.TimeAgo] instead
+// Deprecated: use the [goment.PortalnesiaGoment.TimeAgo] instead
+//
+// Will be removed in the next minor updates
 func TimeAgo(seconds int64) string {
-	a, err := goment.New(seconds)
-	if err != nil {
-		panic(err)
-	}
+	a := goment.Must(seconds)
 	return a.TimeAgo(true).Format
 }
 
@@ -204,33 +205,46 @@ func ValidateEmail(e string) bool {
 
 // Check if variable is true
 func IsTrue(value interface{}) bool {
-	r := reflect.TypeOf(value)
-	t := r.String()
-
-	if t == "string" {
-		if value == "1" || value == "true" {
+	switch t := value.(type) {
+	case string:
+		if t == "1" || strings.ToLower(t) == "true" {
 			return true
 		}
-	}
-
-	if t == "int" || t == "int32" || t == "int64" {
-		if value == 1 {
+	case int:
+		if t == 1 {
 			return true
 		}
-	}
-
-	if t == "bool" {
-		if value == true {
+	case int32:
+		if t == 1 {
 			return true
 		}
+	case int64:
+		if t == 1 {
+			return true
+		}
+	case uint:
+		if t == 1 {
+			return true
+		}
+	case uint32:
+		if t == 1 {
+			return true
+		}
+	case uint64:
+		if t == 1 {
+			return true
+		}
+	case bool:
+		return t
+	default:
+		return false
 	}
-
 	return false
 }
 
 // New goment instance
 //
-//	Alias of [goment.New]
-func NewGoment(args ...interface{}) (*goment.PortalnesiaGoment, error) {
-	return goment.New(args...)
+// Alias of [goment.Must]
+func NewGoment(args ...interface{}) *goment.PortalnesiaGoment {
+	return goment.Must(args...)
 }

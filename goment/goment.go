@@ -56,6 +56,55 @@ func New(args ...interface{}) (*PortalnesiaGoment, error) {
 	return a, err
 }
 
+// New Custom Goment Instance with Panic if error
+//
+// Different with original goment package is:
+//
+// If args type is `int` or `int32` or `int64`, it will return goment.Unix() instead of goment.fromUnixNanoseconds()
+func Must(args ...interface{}) *PortalnesiaGoment {
+	var err error
+	var out *moment.Goment
+
+	switch len(args) {
+	case 0:
+		out, err = moment.New()
+	case 1:
+		switch v := args[0].(type) {
+		case int:
+			out, err = moment.Unix(int64(v))
+			if err != nil {
+				panic(err)
+			}
+			out, err = moment.New(out)
+		case int32:
+			out, err = moment.Unix(int64(v))
+			if err != nil {
+				panic(err)
+			}
+			out, err = moment.New(out)
+		case int64:
+			out, err = moment.Unix(v)
+			if err != nil {
+				panic(err)
+			}
+			out, err = moment.New(out)
+		default:
+			out, err = moment.New(v)
+		}
+	default:
+		out, err = moment.New(args)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	a := &PortalnesiaGoment{out}
+	a.UTC()
+
+	return a
+}
+
 type TimeAgoResult struct {
 	Format    string `json:"format"`
 	Timestamp int64  `json:"timestamp"`
