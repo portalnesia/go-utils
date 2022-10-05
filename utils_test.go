@@ -88,7 +88,13 @@ func TestNumberSize(t *testing.T) {
 
 	parse := NumberSize(float64(size), 2)
 
-	if parse != "5.05 GB" {
+	if parse != "47.02 GB" {
+		t.Errorf("Invalid NumberSize. Get: %s", parse)
+	}
+
+	parse = NumberSize(float64(18037807), 2)
+
+	if parse != "17.20 MB" {
 		t.Errorf("Invalid NumberSize. Get: %s", parse)
 	}
 }

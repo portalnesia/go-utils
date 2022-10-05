@@ -102,7 +102,7 @@ func NumberSize(bytes float64, precision int) string {
 	units := []string{"B", "KB", "MB", "GB", "TB"}
 
 	bytes = math.Max(bytes, 0)
-	pow := math.Floor(math.Log10(bytes)) / math.Log10(1024)
+	pow := float64(int64(math.Floor(math.Log10(bytes)) / math.Log10(1024)))
 	pow = math.Min(pow, float64(len(units)-1))
 
 	bytes /= math.Pow(1024, pow)
