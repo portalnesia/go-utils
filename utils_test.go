@@ -2,7 +2,6 @@ package utils
 
 import (
 	"testing"
-	"time"
 )
 
 func TestTruncate(t *testing.T) {
@@ -116,42 +115,6 @@ func TestNanoId(t *testing.T) {
 	}
 	if len(parse) != 50 {
 		t.Errorf("Invalid NanoId length. Get: %s", parse)
-	}
-}
-
-func TestTimeAgo(t *testing.T) {
-	times := time.Now()
-	date1 := times.Add(-11 * time.Second)
-	date2 := times.Add(-11 * time.Minute)
-	date3 := times.Add(-5 * time.Hour)
-	date4 := times.AddDate(0, 0, -6)
-	date5 := times.AddDate(0, -2, 0)
-	date6 := times.AddDate(-2, 0, 0)
-
-	parse1 := TimeAgo(date1.Unix())
-	parse2 := TimeAgo(date2.Unix())
-	parse3 := TimeAgo(date3.Unix())
-	parse4 := TimeAgo(date4.Unix())
-	parse5 := TimeAgo(date5.Unix())
-	parse6 := TimeAgo(date6.Unix())
-
-	if parse1 != "a few seconds ago" {
-		t.Errorf("Invalid TimeAgo less minutes. Get: %s", parse1)
-	}
-	if parse2 != "11 minutes ago" {
-		t.Errorf("Invalid TimeAgo minutes ago. Get: %s", parse2)
-	}
-	if parse3 != "5 hours ago" {
-		t.Errorf("Invalid TimeAgo hours ago. Get: %s", parse3)
-	}
-	if parse4 != "6 days ago" {
-		t.Errorf("Invalid TimeAgo days ago. Get: %s", parse4)
-	}
-	if parse5 != "2 months ago" {
-		t.Errorf("Invalid TimeAgo months ago. Get: %s", parse5)
-	}
-	if parse6 != "2 years ago" {
-		t.Errorf("Invalid TimeAgo years ago. Get: %s", parse6)
 	}
 }
 
@@ -304,24 +267,5 @@ func TestIsTrue(t *testing.T) {
 	}
 	if !parse6 {
 		t.Errorf("Invalid IsTrue true. Get: %v", parse6)
-	}
-}
-
-func TestNewGoment(t *testing.T) {
-	var (
-		stringFormat string = "2020-02-02 12:00:00" // UTC 0000
-		unixFormat   int64  = 1580644800
-	)
-
-	a := NewGoment(unixFormat)
-
-	f := a.Format("YYYY-MM-DD HH:mm:ss")
-	if f != stringFormat {
-		t.Errorf("[NewGoment] Error Format Date. Get: %s", f)
-	}
-
-	u := a.ToUnix()
-	if u != unixFormat {
-		t.Errorf("[NewGoment] Error Unix Date. Get: %v", u)
 	}
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/gosimple/slug"
 	nanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/portalnesia/go-utils/goment"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -117,18 +116,6 @@ func NumberSize(bytes float64, precision int) string {
 // Generate random ID
 func NanoId(length ...int) string {
 	return nanoid.Must(length...)
-}
-
-// Format second integer to human readable `timeago` format
-//
-// Example: `11 minutes ago`
-//
-// Deprecated: use the [goment.PortalnesiaGoment.TimeAgo] instead
-//
-// Will be removed in the next minor updates
-func TimeAgo(seconds int64) string {
-	a := goment.Must(seconds)
-	return a.TimeAgo(true).Format
 }
 
 // Comma separate integer
@@ -240,11 +227,4 @@ func IsTrue(value interface{}) bool {
 		return false
 	}
 	return false
-}
-
-// New goment instance
-//
-// Alias of [goment.Must]
-func NewGoment(args ...interface{}) *goment.PortalnesiaGoment {
-	return goment.Must(args...)
 }
