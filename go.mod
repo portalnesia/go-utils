@@ -1,17 +1,13 @@
-module github.com/portalnesia/go-utils
+module go.portalnesia.com/utils
 
-go 1.19
+go 1.21.0
 
 require (
 	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/microcosm-cc/bluemonday v1.0.19
-	github.com/nleeper/goment v1.4.4
 )
 
-require (
-	github.com/gosimple/unidecode v1.0.1 // indirect
-	github.com/tkuchiki/go-timezone v0.2.0 // indirect
-)
+require github.com/gosimple/unidecode v1.0.1 // indirect
 
 require (
 	github.com/aymerick/douceur v0.2.0 // indirect

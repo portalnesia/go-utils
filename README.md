@@ -4,12 +4,12 @@
 
 Utility package for Internal Portalnesia
 
-This package converted from [Javascript Version](https://github.com/portalnesia/portalnesia/tree/main/packages/utils) of Portalnesia Utils
+This package converted from [Javascript Version](https://github.com/portalnesia/portalnesia-utils) of Portalnesia Utils
 
 ## Install
 
 ```bash
-go get github.com/portalnesia/go-utils
+go get go.portalnesia.com/utils
 ```
 
 ## Example
@@ -18,7 +18,7 @@ go get github.com/portalnesia/go-utils
 package main
 
 import (
-  utils "github.com/portalnesia/go-utils"
+  utils "go.portalnesia.com/utils"
   "fmt"
 )
 
@@ -31,4 +31,4 @@ func main() {
 ```
 
 ## Go References
-[pkg.go.dev/github.com/portalnesia/go-utils](https://pkg.go.dev/github.com/portalnesia/go-utils)
+[pkg.go.dev/go.portalnesia.com/utils](https://pkg.go.dev/go.portalnesia.com/utils)
