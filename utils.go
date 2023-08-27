@@ -1,12 +1,14 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"net/url"
 	"regexp"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/gosimple/slug"
 	nanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/microcosm-cc/bluemonday"
@@ -38,6 +40,10 @@ func CleanAndTruncate(s string, max int) string {
 //
 // Example: "https://portalnesia.com/contact" => "portalnesia.com/contact"
 func ParseUrl(s string) (string, error) {
+	if s[0:4] != "http" {
+		return "", errors.New("invalid url")
+	}
+
 	url, err := url.Parse(s)
 	if err != nil {
 		return "", err
@@ -116,6 +122,11 @@ func NumberSize(bytes float64, precision int) string {
 // Generate random ID
 func NanoId(length ...int) string {
 	return nanoid.Must(length...)
+}
+
+// Generate UUID
+func UUID() string {
+	return uuid.NewString()
 }
 
 // Comma separate integer
@@ -201,6 +212,14 @@ func IsTrue(value interface{}) bool {
 		if t == 1 {
 			return true
 		}
+	case int8:
+		if t == 1 {
+			return true
+		}
+	case int16:
+		if t == 1 {
+			return true
+		}
 	case int32:
 		if t == 1 {
 			return true
@@ -213,12 +232,28 @@ func IsTrue(value interface{}) bool {
 		if t == 1 {
 			return true
 		}
+	case uint8:
+		if t == 1 {
+			return true
+		}
+	case uint16:
+		if t == 1 {
+			return true
+		}
 	case uint32:
 		if t == 1 {
 			return true
 		}
 	case uint64:
 		if t == 1 {
+			return true
+		}
+	case float32:
+		if t == float32(1) {
+			return true
+		}
+	case float64:
+		if t == float64(1) {
 			return true
 		}
 	case bool:
