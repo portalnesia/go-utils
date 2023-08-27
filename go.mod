@@ -3,6 +3,7 @@ module go.portalnesia.com/utils
 go 1.21
 
 require (
+	github.com/google/uuid v1.3.1
 	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/microcosm-cc/bluemonday v1.0.19
 )

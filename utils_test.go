@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestTruncate(t *testing.T) {
@@ -46,6 +49,14 @@ func TestParseUrl(t *testing.T) {
 	if parser != "portalnesia.com/news?foo=bar" {
 		t.Errorf("Invalid ParseUrl. Get: %s", parser)
 	}
+
+	if parser, err = ParseUrl("error url"); err == nil {
+		t.Errorf("This url must be error: %s", parser)
+	}
+
+	if parser, err = ParseUrl("https://err. https://"); err == nil {
+		t.Errorf("This url must be error: %s", parser)
+	}
 }
 
 func TestUcwords(t *testing.T) {
@@ -85,15 +96,19 @@ func TestSlug(t *testing.T) {
 func TestNumberSize(t *testing.T) {
 	size := 50486525485
 
-	parse := NumberSize(float64(size), 2)
-
-	if parse != "47.02 GB" {
+	if parse := NumberSize(float64(size), 2); parse != "47.02 GB" {
 		t.Errorf("Invalid NumberSize. Get: %s", parse)
 	}
 
-	parse = NumberSize(float64(18037807), 2)
+	if parse := NumberSize(float64(18037807), 2); parse != "17.20 MB" {
+		t.Errorf("Invalid NumberSize. Get: %s", parse)
+	}
 
-	if parse != "17.20 MB" {
+	if parse := NumberSize(float64(18037807), 0); parse != "17.20 MB" {
+		t.Errorf("Invalid NumberSize. Get: %s", parse)
+	}
+
+	if parse := NumberSize(float64(0), 0); parse != "-" {
 		t.Errorf("Invalid NumberSize. Get: %s", parse)
 	}
 }
@@ -115,6 +130,15 @@ func TestNanoId(t *testing.T) {
 	}
 	if len(parse) != 50 {
 		t.Errorf("Invalid NanoId length. Get: %s", parse)
+	}
+}
+
+func TestUUID(t *testing.T) {
+
+	uid := UUID()
+
+	if _, err := uuid.Parse(uid); err != nil {
+		t.Error(err)
 	}
 }
 
@@ -196,24 +220,23 @@ func TestFirstToUpper(t *testing.T) {
 }
 
 func TestNumberFormatShort(t *testing.T) {
-	var n int64 = 5025
-	parse := NumberFormatShort(n)
+	if parse := NumberFormatShort(50); parse.Format != "50" {
+		t.Errorf("Invalid NumberFormatShort 50. Get: %s", parse.Format)
+	}
 
-	if parse.Format != "5.03 K" {
+	if parse := NumberFormatShort(5025); parse.Format != "5.03 K" {
 		t.Errorf("Invalid NumberFormatShort 5025. Get: %s", parse.Format)
 	}
 
-	n = 64768456
-	parse = NumberFormatShort(n)
-
-	if parse.Format != "64.77 M" {
+	if parse := NumberFormatShort(64768456); parse.Format != "64.77 M" {
 		t.Errorf("Invalid NumberFormatShort 64768456. Get: %s", parse.Format)
 	}
 
-	n = 1065201025
-	parse = NumberFormatShort(n)
+	if parse := NumberFormatShort(1065201025); parse.Format != "1.07 B" {
+		t.Errorf("Invalid NumberFormatShort 1065201025. Get: %s", parse.Format)
+	}
 
-	if parse.Format != "1.07 B" {
+	if parse := NumberFormatShort(6065201025456); parse.Format != "6.07 T" {
 		t.Errorf("Invalid NumberFormatShort 1065201025. Get: %s", parse.Format)
 	}
 }
@@ -235,37 +258,46 @@ func TestValidateEmail(t *testing.T) {
 }
 
 func TestIsTrue(t *testing.T) {
-	d := "true"
-	parse1 := IsTrue(d)
-	d = "sagasg"
-	parse2 := IsTrue(d)
+	tests := []struct {
+		value  interface{}
+		expect bool
+	}{
+		{"true", true},
+		{"random", false},
+		{5, false},
+		{1, true},
+		{false, false},
+		{true, true},
+		{int8(1), true},
+		{int8(0), false},
+		{int16(1), true},
+		{int16(0), false},
+		{int32(1), true},
+		{int32(0), false},
+		{int64(1), true},
+		{int64(0), false},
+		{uint(1), true},
+		{uint(0), false},
+		{uint8(1), true},
+		{uint8(0), false},
+		{uint16(1), true},
+		{uint16(0), false},
+		{uint32(1), true},
+		{uint32(0), false},
+		{uint64(1), true},
+		{uint64(0), false},
+		{float32(1), true},
+		{float32(0), false},
+		{float64(1), true},
+		{float64(0), false},
+		{struct{ custom string }{custom: "string"}, false},
+	}
 
-	e := 5
-	parse3 := IsTrue(e)
-	e = 1
-	parse4 := IsTrue(e)
-
-	f := false
-	parse5 := IsTrue(f)
-	f = true
-	parse6 := IsTrue(f)
-
-	if !parse1 {
-		t.Errorf("Invalid IsTrue `true`. Get: %v", parse1)
-	}
-	if parse2 {
-		t.Errorf("Invalid IsTrue `sagasg`. Get: %v", parse2)
-	}
-	if parse3 {
-		t.Errorf("Invalid IsTrue 5. Get: %v", parse3)
-	}
-	if !parse4 {
-		t.Errorf("Invalid IsTrue 1. Get: %v", parse4)
-	}
-	if parse5 {
-		t.Errorf("Invalid IsTrue false. Get: %v", parse5)
-	}
-	if !parse6 {
-		t.Errorf("Invalid IsTrue true. Get: %v", parse6)
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("TestIsTrue for value: %v", tt.value), func(t *testing.T) {
+			if isTrue := IsTrue(tt.value); isTrue != tt.expect {
+				t.Errorf("Invalid return for value: %v", tt.value)
+			}
+		})
 	}
 }
