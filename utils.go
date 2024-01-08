@@ -30,13 +30,13 @@ func Clean(s string) string {
 	return p.Sanitize(s)
 }
 
-// Clean HTML format and truncate string
+// CleanAndTruncate Clean HTML format and truncate string
 func CleanAndTruncate(s string, max int) string {
 	str := Clean(s)
 	return str[:max] + "..."
 }
 
-// Parse raw URL to clean URL
+// ParseUrl Parse raw URL to clean URL
 //
 // Example: "https://portalnesia.com/contact" => "portalnesia.com/contact"
 func ParseUrl(s string) (string, error) {
@@ -59,7 +59,7 @@ func ParseUrl(s string) (string, error) {
 	return parser, nil
 }
 
-// Capitalize each words in string
+// Ucwords Capitalize each words in string
 //
 // Example: "Hello world" => "Hello World"
 func Ucwords(s string) string {
@@ -67,7 +67,7 @@ func Ucwords(s string) string {
 	return caser.String(strings.ToLower(s))
 }
 
-// Parse string to first letter uppercase
+// FirstLetter Parse string to first letter uppercase
 //
 // Example: "Hello world" => "HM"
 //
@@ -86,14 +86,14 @@ func FirstLetter(s string, max int) string {
 	return output
 }
 
-// Slugify format of string
+// Slug Slugify format of string
 //
 // Example: "hello world" => "hello-world"
 func Slug(s string) string {
 	return slug.Make(s)
 }
 
-// Format bytes to human readable string
+// NumberSize Format bytes to human readable string
 //
 // Example: 50486525485 => "5.05 GB"
 func NumberSize(bytes float64, precision int) string {
@@ -119,17 +119,17 @@ func NumberSize(bytes float64, precision int) string {
 	return result
 }
 
-// Generate random ID
+// NanoId Generate random ID
 func NanoId(length ...int) string {
 	return nanoid.Must(length...)
 }
 
-// Generate UUID
+// UUID Generate UUID
 func UUID() string {
 	return uuid.NewString()
 }
 
-// Comma separate integer
+// SeparateNumber Comma separate integer
 //
 // Example: 5000 => "5,000"
 func SeparateNumber(number int64) string {
@@ -138,13 +138,13 @@ func SeparateNumber(number int64) string {
 	return str
 }
 
-// ValidateURL
+// IsUrl ValidateURL
 func IsUrl(stringUrl string) bool {
 	_, err := url.ParseRequestURI(stringUrl)
 	return err == nil
 }
 
-// Validate Twitter URL
+// IsTwitterUrl Validate Twitter URL
 func IsTwitterUrl(twitterUrl string) bool {
 	isUrl := IsUrl(twitterUrl)
 
@@ -157,7 +157,7 @@ func IsTwitterUrl(twitterUrl string) bool {
 	return regex.MatchString(twitterUrl)
 }
 
-// Capitalize first characters in word
+// FirstToUpper Capitalize first characters in word
 //
 // Example: "hello world" => "Hello world"
 func FirstToUpper(text string) string {
@@ -171,7 +171,7 @@ type NumberFormatType struct {
 	Format string `json:"format"`
 }
 
-// Format integer to K,M,B,T format
+// NumberFormatShort Format integer to K,M,B,T format
 //
 // Example: 64768456 => "64.77 M"
 func NumberFormatShort(n int64) NumberFormatType {
@@ -195,56 +195,20 @@ func NumberFormatShort(n int64) NumberFormatType {
 	}
 }
 
-// Validate email
+// ValidateEmail Validate email
 func ValidateEmail(e string) bool {
-	regex := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$`)
+	regex := regexp.MustCompile(`^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$`)
 	return regex.MatchString(e)
 }
 
-// Check if variable is true
+// IsTrue Check if variable is true
 func IsTrue(value interface{}) bool {
 	switch t := value.(type) {
 	case string:
 		if t == "1" || strings.ToLower(t) == "true" {
 			return true
 		}
-	case int:
-		if t == 1 {
-			return true
-		}
-	case int8:
-		if t == 1 {
-			return true
-		}
-	case int16:
-		if t == 1 {
-			return true
-		}
-	case int32:
-		if t == 1 {
-			return true
-		}
-	case int64:
-		if t == 1 {
-			return true
-		}
-	case uint:
-		if t == 1 {
-			return true
-		}
-	case uint8:
-		if t == 1 {
-			return true
-		}
-	case uint16:
-		if t == 1 {
-			return true
-		}
-	case uint32:
-		if t == 1 {
-			return true
-		}
-	case uint64:
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		if t == 1 {
 			return true
 		}
