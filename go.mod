@@ -8,7 +8,10 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.19
 )
 
-require github.com/gosimple/unidecode v1.0.1 // indirect
+require (
+	github.com/gosimple/unidecode v1.0.1 // indirect
+	github.com/oklog/ulid v1.3.1 // indirect
+)
 
 require (
 	github.com/aymerick/douceur v0.2.0 // indirect

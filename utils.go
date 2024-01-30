@@ -3,10 +3,13 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"github.com/oklog/ulid"
 	"math"
+	"math/rand"
 	"net/url"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
@@ -21,7 +24,13 @@ import (
 //
 // Example: "lorem ipsum lorem ipsum lorem ipsum" => "lorem ipsum lor..."
 func Truncate(s string, max int) string {
-	return s[:max] + "..."
+	if max > len(s) {
+		max = len(s)
+		return s
+	} else {
+		max -= 3
+		return s[:max] + "..."
+	}
 }
 
 // Clean html format in string
@@ -33,14 +42,14 @@ func Clean(s string) string {
 // Clean HTML format and truncate string
 func CleanAndTruncate(s string, max int) string {
 	str := Clean(s)
-	return str[:max] + "..."
+	return Truncate(str, max)
 }
 
 // Parse raw URL to clean URL
 //
 // Example: "https://portalnesia.com/contact" => "portalnesia.com/contact"
 func ParseUrl(s string) (string, error) {
-	if s[0:4] != "http" {
+	if len(s) < 4 || len(s) >= 4 && s[0:4] != "http" {
 		return "", errors.New("invalid url")
 	}
 
@@ -73,7 +82,10 @@ func Ucwords(s string) string {
 //
 // If max is less than 1, function return all first letter of strings
 func FirstLetter(s string, max int) string {
-	regex, _ := regexp.Compile(`\b[A-Z]`)
+	regex, err := regexp.Compile(`\b[A-Z]`)
+	if err != nil {
+		return s
+	}
 
 	str := regex.FindAllString(strings.ToUpper(s), -1)
 
@@ -129,12 +141,33 @@ func UUID() string {
 	return uuid.NewString()
 }
 
+func NanoIdStr(str string, length int) string {
+	if str == "" {
+		str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	}
+	if length == 0 {
+		length = 20
+	}
+	return nanoid.MustGenerate("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", length)
+}
+
+func Ulid() string {
+	t := time.Now().UTC()
+	entropy := rand.New(rand.NewSource(t.UnixNano()))
+	id := ulid.MustNew(ulid.Timestamp(t), entropy)
+	return id.String()
+}
+
 // Comma separate integer
 //
 // Example: 5000 => "5,000"
-func SeparateNumber(number int64) string {
-	p := message.NewPrinter(language.English)
-	str := p.Sprintf("%d", number)
+func SeparateNumber(number float64, tags ...language.Tag) string {
+	tag := language.English
+	if len(tags) == 1 {
+		tag = tags[0]
+	}
+	p := message.NewPrinter(tag)
+	str := p.Sprintf("%1.f", number)
 	return str
 }
 
@@ -262,4 +295,14 @@ func IsTrue(value interface{}) bool {
 		return false
 	}
 	return false
+}
+
+func Ternary[D any](cond bool, ifTrue D, ifFalse D) D {
+	var response D
+	if cond {
+		response = ifTrue
+	} else {
+		response = ifFalse
+	}
+	return response
 }
