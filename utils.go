@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Portalnesia - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Putu Aditya <aditya@portalnesia.com>
+ */
+
 package utils
 
 import (
@@ -33,19 +40,19 @@ func Truncate(s string, max int) string {
 	}
 }
 
-// Clean html format in string
+// Clean to clean html format in string
 func Clean(s string) string {
 	p := bluemonday.NewPolicy()
 	return p.Sanitize(s)
 }
 
-// Clean HTML format and truncate string
+// CleanAndTruncate clean HTML format and truncate string
 func CleanAndTruncate(s string, max int) string {
 	str := Clean(s)
 	return Truncate(str, max)
 }
 
-// Parse raw URL to clean URL
+// ParseUrl Parse raw URL to clean URL
 //
 // Example: "https://portalnesia.com/contact" => "portalnesia.com/contact"
 func ParseUrl(s string) (string, error) {
@@ -68,7 +75,7 @@ func ParseUrl(s string) (string, error) {
 	return parser, nil
 }
 
-// Capitalize each words in string
+// Ucwords Capitalize each words in string
 //
 // Example: "Hello world" => "Hello World"
 func Ucwords(s string) string {
@@ -76,7 +83,7 @@ func Ucwords(s string) string {
 	return caser.String(strings.ToLower(s))
 }
 
-// Parse string to first letter uppercase
+// FirstLetter Parse string to first letter uppercase
 //
 // Example: "Hello world" => "HM"
 //
@@ -98,14 +105,14 @@ func FirstLetter(s string, max int) string {
 	return output
 }
 
-// Slugify format of string
+// Slug Slugify format of string
 //
 // Example: "hello world" => "hello-world"
 func Slug(s string) string {
 	return slug.Make(s)
 }
 
-// Format bytes to human readable string
+// NumberSize Format bytes to human readable string
 //
 // Example: 50486525485 => "5.05 GB"
 func NumberSize(bytes float64, precision int) string {
@@ -131,26 +138,32 @@ func NumberSize(bytes float64, precision int) string {
 	return result
 }
 
-// Generate random ID
+// NanoId Generate random ID
 func NanoId(length ...int) string {
 	return nanoid.Must(length...)
 }
 
-// Generate UUID
+// UUID Generate UUID
 func UUID() string {
 	return uuid.NewString()
 }
 
-func NanoIdStr(str string, length int) string {
+// NanoIdStr Generate random ID with alphabet
+//
+// Default length: 20
+func NanoIdStr(str string, length ...int) string {
 	if str == "" {
 		str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	}
-	if length == 0 {
-		length = 20
+	lng := 20
+	if len(length) > 0 {
+		lng = length[0]
 	}
-	return nanoid.MustGenerate("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", length)
+
+	return nanoid.MustGenerate(str, lng)
 }
 
+// Ulid generate ulid.Ulid
 func Ulid() string {
 	t := time.Now().UTC()
 	entropy := rand.New(rand.NewSource(t.UnixNano()))
@@ -158,7 +171,7 @@ func Ulid() string {
 	return id.String()
 }
 
-// Comma separate integer
+// SeparateNumber Comma separate integer
 //
 // Example: 5000 => "5,000"
 func SeparateNumber(number float64, tags ...language.Tag) string {
@@ -171,13 +184,13 @@ func SeparateNumber(number float64, tags ...language.Tag) string {
 	return str
 }
 
-// ValidateURL
+// IsUrl Validate if stringUrl is URL
 func IsUrl(stringUrl string) bool {
 	_, err := url.ParseRequestURI(stringUrl)
 	return err == nil
 }
 
-// Validate Twitter URL
+// IsTwitterUrl Validate if twitterUrl is Twitter URL
 func IsTwitterUrl(twitterUrl string) bool {
 	isUrl := IsUrl(twitterUrl)
 
@@ -190,7 +203,7 @@ func IsTwitterUrl(twitterUrl string) bool {
 	return regex.MatchString(twitterUrl)
 }
 
-// Capitalize first characters in word
+// FirstToUpper Capitalize first characters in word
 //
 // Example: "hello world" => "Hello world"
 func FirstToUpper(text string) string {
@@ -204,7 +217,7 @@ type NumberFormatType struct {
 	Format string `json:"format"`
 }
 
-// Format integer to K,M,B,T format
+// NumberFormatShort Format integer to K,M,B,T format
 //
 // Example: 64768456 => "64.77 M"
 func NumberFormatShort(n int64) NumberFormatType {
@@ -228,13 +241,13 @@ func NumberFormatShort(n int64) NumberFormatType {
 	}
 }
 
-// Validate email
+// ValidateEmail Validate if e is email
 func ValidateEmail(e string) bool {
 	regex := regexp.MustCompile(`^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$`)
 	return regex.MatchString(e)
 }
 
-// Check if variable is true
+// IsTrue Check if value is true
 func IsTrue(value interface{}) bool {
 	switch t := value.(type) {
 	case string:
@@ -297,6 +310,9 @@ func IsTrue(value interface{}) bool {
 	return false
 }
 
+// Ternary is ternary utility in golang
+//
+//	`cond ? ifTrue : ifFalse`
 func Ternary[D any](cond bool, ifTrue D, ifFalse D) D {
 	var response D
 	if cond {

@@ -1,7 +1,15 @@
+/*
+ * Copyright (c) Portalnesia - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Putu Aditya <aditya@portalnesia.com>
+ */
+
 package utils
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/google/uuid"
@@ -12,7 +20,7 @@ func TestTruncate(t *testing.T) {
 
 	truncate := Truncate(text, 11)
 
-	if truncate != "Hello world..." {
+	if truncate != "Hello wo..." {
 		t.Errorf("Invalid truncate. Get: %s", truncate)
 	}
 }
@@ -32,7 +40,7 @@ func TestCleanAndTruncate(t *testing.T) {
 
 	truncate := CleanAndTruncate(text, 11)
 
-	if truncate != "Hello world..." {
+	if truncate != "Hello wo..." {
 		t.Errorf("Invalid clean and truncate. Get: %s", truncate)
 	}
 }
@@ -114,7 +122,6 @@ func TestNumberSize(t *testing.T) {
 }
 
 func TestNanoId(t *testing.T) {
-
 	parse := NanoId()
 
 	if parse == "" {
@@ -142,8 +149,35 @@ func TestUUID(t *testing.T) {
 	}
 }
 
+func TestNanoIdStr(t *testing.T) {
+	parse := NanoIdStr("ABCDEFGHIJKLMN")
+
+	if parse == "" {
+		t.Errorf("Invalid NanoIdStr. Get: %s", parse)
+	}
+	if len(parse) != 20 {
+		t.Errorf("Invalid NanoId length. Get: %s", parse)
+	}
+
+	if regexp.MustCompile(`[0-9a-z]]`).MatchString(parse) {
+		t.Errorf("Invalid NanoId alphabet. Get: %s", parse)
+	}
+
+	parse = NanoIdStr("123456789", 50)
+	if parse == "" {
+		t.Errorf("Invalid NanoId. Get: %s", parse)
+	}
+	if len(parse) != 50 {
+		t.Errorf("Invalid NanoId length. Get: %s", parse)
+	}
+
+	if regexp.MustCompile(`[a-zA-Z]]`).MatchString(parse) {
+		t.Errorf("Invalid NanoId alphabet. Get: %s", parse)
+	}
+}
+
 func TestSeparateNumber(t *testing.T) {
-	var number int64 = 25000
+	var number float64 = 25000
 
 	parse := SeparateNumber(number)
 	if parse != "25,000" {
@@ -299,5 +333,17 @@ func TestIsTrue(t *testing.T) {
 				t.Errorf("Invalid return for value: %v", tt.value)
 			}
 		})
+	}
+}
+
+func TestTernary(t *testing.T) {
+	shouldTrue := Ternary(true, "true", "false")
+	if shouldTrue != "true" {
+		t.Errorf("Invalid ternary; get :%v", shouldTrue)
+	}
+
+	shouldFalse := Ternary(false, "true", "false")
+	if shouldFalse != "false" {
+		t.Errorf("Invalid ternary; get :%v", shouldFalse)
 	}
 }
