@@ -146,7 +146,11 @@ func NanoId(length ...int) string {
 
 // UUID Generate UUID
 func UUID() string {
-	return uuid.NewString()
+	uid, err := uuid.NewV7()
+	if err != nil {
+		panic(err)
+	}
+	return uid.String()
 }
 
 // NanoIdStr Generate random ID with alphabet
