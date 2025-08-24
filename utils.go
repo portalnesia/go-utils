@@ -10,13 +10,14 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/oklog/ulid"
 	"math"
 	"math/rand"
 	"net/url"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/oklog/ulid"
 
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
@@ -163,11 +164,11 @@ func NanoIdStr(str string, length ...int) string {
 	return nanoid.MustGenerate(str, lng)
 }
 
+var ulidEntropy = ulid.Monotonic(rand.New(rand.NewSource(time.Now().UnixNano())), 0)
+
 // Ulid generate ulid.Ulid
 func Ulid() string {
-	t := time.Now().UTC()
-	entropy := rand.New(rand.NewSource(t.UnixNano()))
-	id := ulid.MustNew(ulid.Timestamp(t), entropy)
+	id := ulid.MustNew(ulid.Timestamp(time.Now().UTC()), ulidEntropy)
 	return id.String()
 }
 
